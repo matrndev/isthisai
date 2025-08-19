@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <% if (message !== "") { %>
+            <p class="text-center fs-3 text-danger"><%=message%></p>
+        <% } %>
+        <h1 class="text-center mt-4 fw-bold">Is This AI DB Entry Editor</h1>
+        <a href="/browser" style="text-align: center;">Entry Browser</a>
+        <h2 class="mt-2">Manual single entry creation:</h2>
+        <form action="/create" method="POST" class="mb-2">
+            <div class="input-group">
+                <input type="text" placeholder="Object Title" class="form-control" id="topic" name="topic" value="<%=topic%>">
+            </div>
+            <div class="mt-2">
+                <% models.forEach(function(model, idx) { %>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="model" id="model_<%= idx %>" value="<%= model.id %>" <%= idx === 0 ? 'checked' : '' %>>
+                        <label class="form-check-label" for="model_<%= idx %>"><%= model.id %></label>
+                    </div>
+                <% }); %>
+            </div>
+            <button class="btn btn-success" type="submit" id="button-addon" onclick="return showPleaseWait()">Generate</button>
+        
+            <div id="please-wait-message" class="mt-2" style="display:none;">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Please wait...</span>
+                </div>
+                <span id="please-wait-timer" class="ms-2">0s</span>
+                <script>
+                    let timerInterval;
+                    function startPleaseWaitTimer() {
+                        let seconds = 0;
+                        const timerElem = document.getElementById('please-wait-timer');
+                        timerElem.textContent = '0s';
+                        timerInterval = setInterval(() => {
+                            seconds++;
+                            timerElem.textContent = seconds + 's';
+                        }, 1000);
+                    }
+                    function stopPleaseWaitTimer() {
+                        clearInterval(timerInterval);
+                    }
+                    // Start timer when message is shown
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const form = document.querySelector('form[action="/create"]');
+                        form.addEventListener('submit', function() {
+                            startPleaseWaitTimer();
+                        });
+                    });
+                </script>
+            </div>
+            <script>
+                function showPleaseWait() {
+                    const form = document.querySelector('form[action="/create"]');
+                    if (form.checkValidity()) {
+                        document.getElementById('please-wait-message').style.display = 'block';
+                    }
+                }
+            </script>
+            </div>
+        </form>
+        <% if (wikiSummary && AISummary) { %>
+            <div class="container">
+                <div class="row">
+                    <h3 class="text-primary"><%=topic%></h3>
+                    <div class="col">
+                        <h4>Wikipedia:</h4>
+                        <textarea readonly class="form-control" rows="10"><%= wikiSummary %></textarea>
+                    </div>
+                    <div class="col">
+                        <h4>AI (<%=currentModel%>):</h4>
+                        <textarea readonly class="form-control" rows="10"><%= AISummary %></textarea>
+                    </div>
+                </div>
+                <div class="controls text-center mt-3">
+                    <a href="#" class="btn btn-primary mr-5">Save to database</a>
+                    <a href="/" class="btn btn-danger">Discard</a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>
