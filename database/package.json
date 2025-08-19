@@ -11,10 +11,13 @@
   "type": "module",
   "description": "",
   "dependencies": {
+    "body-parser": "^2.2.0",
     "bootstrap": "^5.3.7",
     "dotenv": "^17.2.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "mongodb": "^6.18.0",
+    "node-fetch": "^3.3.2",
     "openai": "^5.12.2",
     "wikipedia": "^2.1.2"
   }

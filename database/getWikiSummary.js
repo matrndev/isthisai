@@ -6,7 +6,8 @@ async function getWikiSummary(title) {
 		const summary = await page.summary();
         return {
             title: summary.title,
-            extract: summary.extract
+            extract: summary.extract,
+            url: summary.content_urls.desktop.page
         }
 	} catch (error) {
 		console.log(error);

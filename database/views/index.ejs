@@ -13,9 +13,10 @@
             <p class="text-center fs-3 text-danger"><%=message%></p>
         <% } %>
         <h1 class="text-center mt-4 fw-bold">Is This AI DB Entry Editor</h1>
-        <a href="/browser" style="text-align: center;">Entry Browser</a>
+        <a href="?platform=openai" style="text-align: center;">OpenAI</a>
+        <a href="?platform=hc" style="text-align: center;">Hack Club</a>
         <h2 class="mt-2">Manual single entry creation:</h2>
-        <form action="/create" method="POST" class="mb-2">
+        <form action="/create" method="POST" class="mb-2" onsubmit="const p=new URLSearchParams(location.search).get('platform'); if(p){ this.action='/create?platform='+encodeURIComponent(p); }">
             <div class="input-group">
                 <input type="text" placeholder="Object Title" class="form-control" id="topic" name="topic" value="<%=topic%>">
             </div>
@@ -74,6 +75,7 @@
                     <div class="col">
                         <h4>Wikipedia:</h4>
                         <textarea readonly class="form-control" rows="10"><%= wikiSummary %></textarea>
+                        <small><%=wikiURL%></small>
                     </div>
                     <div class="col">
                         <h4>AI (<%=currentModel%>):</h4>
@@ -81,8 +83,44 @@
                     </div>
                 </div>
                 <div class="controls text-center mt-3">
-                    <a href="#" class="btn btn-primary mr-5">Save to database</a>
-                    <a href="/" class="btn btn-danger">Discard</a>
+                    <button class="btn btn-primary mr-5" onclick="send()">Save to database</button>
+                    <script>
+                        function send() {
+                            fetch('/submit', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    wikiSummary: `<%= wikiSummary %>`,
+                                    AISummary: `<%= AISummary %>`,
+                                    model: `<%= currentModel %>`,
+                                    topic: `<%= topic %>`,
+                                    wikiURL: `<%= wikiURL %>`
+                                })
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    const params = new URLSearchParams(location.search);
+                                    const platform = params.get('platform');
+                                    window.location.href = platform ? '/?platform=' + encodeURIComponent(platform) : '/';
+                                } else {
+                                    alert('Failed to save entry.');
+                                }
+                            })
+                            .catch(error => {
+                                alert('Error: ' + error);
+                            });
+                        }
+                    </script>
+                    <button onclick="cancel()" class="btn btn-danger">Discard</a>
+                    <script>
+                        function cancel() {
+                            const params = new URLSearchParams(location.search);
+                            const platform = params.get('platform');
+                            window.location.href = platform ? '/?platform=' + encodeURIComponent(platform) : '/';
+                        }
+                    </script>
                 </div>
             </div>
         <% } %>
