@@ -42,7 +42,8 @@ function getAISummary(input, model, platform) {
       }
       const data = await response.json();
       // Assuming the response structure is similar to OpenAI's
-      const summary = data.choices?.[0]?.message?.content || "";
+      let summary = data.choices?.[0]?.message?.content || "";
+      summary = summary.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
       resolve(summary);
       } catch (error) {
       console.error('Error fetching AI summary from Hack Club:', error);

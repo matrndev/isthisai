@@ -12,15 +12,15 @@
         <% if (message !== "") { %>
             <p class="text-center fs-3 text-danger"><%=message%></p>
         <% } %>
-        <h1 class="text-center mt-4 fw-bold">Is This AI DB Entry Editor</h1>
-        <a href="?platform=openai" style="text-align: center;">OpenAI</a>
-        <a href="?platform=hc" style="text-align: center;">Hack Club</a>
+        <h1 class="text-center mt-4 fw-bold">Is This AI DB Entry Creator</h1>
+        <div style="text-align: center;"><a href="/database">View Database</a></div>
         <h2 class="mt-2">Manual single entry creation:</h2>
         <form action="/create" method="POST" class="mb-2" onsubmit="const p=new URLSearchParams(location.search).get('platform'); if(p){ this.action='/create?platform='+encodeURIComponent(p); }">
             <div class="input-group">
                 <input type="text" placeholder="Object Title" class="form-control" id="topic" name="topic" value="<%=topic%>">
             </div>
             <div class="mt-2">
+                <p>Platform: <a href="?platform=openai" class="me-1">OpenAI</a><a href="?platform=hc">Hack Club</a></p>
                 <% models.forEach(function(model, idx) { %>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="model" id="model_<%= idx %>" value="<%= model.id %>" <%= idx === 0 ? 'checked' : '' %>>
@@ -86,7 +86,9 @@
                     <button class="btn btn-primary mr-5" onclick="send()">Save to database</button>
                     <script>
                         function send() {
-                            fetch('/submit', {
+                            const params = new URLSearchParams(location.search);
+                            const platform = params.get('platform');
+                            fetch('/submit?platform=' + encodeURIComponent(platform), {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -101,8 +103,6 @@
                             })
                             .then(response => {
                                 if (response.ok) {
-                                    const params = new URLSearchParams(location.search);
-                                    const platform = params.get('platform');
                                     window.location.href = platform ? '/?platform=' + encodeURIComponent(platform) : '/';
                                 } else {
                                     alert('Failed to save entry.');

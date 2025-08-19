@@ -3,7 +3,7 @@ import getWikiSummary from "./getWikiSummary.js";
 import getAISummary from "./getAISummary.js"
 import express from "express";
 import OpenAI from "openai";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import bodyParser from "body-parser";
 import fetch from "node-fetch";
 
@@ -107,7 +107,7 @@ app.post("/create", async (req, res) => {
 
 app.post("/submit", async (req, res) => {
     let modelOptions;
-    const platform = req.query.platform;
+    const platform = req.query.platform || "openai";
     if (!platform || platform === "openai") {
         modelOptions = modelList.data;
     } else if (platform === "hc") {
@@ -139,6 +139,7 @@ app.post("/submit", async (req, res) => {
             wikiURL,
             AISummary,
             model,
+            platform,
             dateCreated: new Date()
         });
         res.redirect("/");
@@ -155,6 +156,56 @@ app.post("/submit", async (req, res) => {
         });
     }
 });
+
+app.get("/database", async (req, res) => {
+    try {
+        const documents = await collection.find({}).toArray();
+        res.render("database", {
+            documents,
+            message: req.query.message || ""
+        });
+    } catch (error) {
+        console.error("Error fetching database records:", error);
+        res.render("database", {
+            documents: [],
+            message: "Error fetching database records."
+        });
+    }
+});
+
+app.post("/delete/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await collection.deleteOne({ _id: new ObjectId(id) });
+        
+        if (result.deletedCount === 1) {
+            res.redirect("/database?message=Record deleted successfully");
+        } else {
+            res.redirect("/database?message=Record not found");
+        }
+    } catch (error) {
+        console.error("Error deleting record:", error);
+        res.redirect("/database?message=Error deleting record");
+    }
+});
+
+app.get("/details/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const document = await collection.findOne({ _id: new ObjectId(id) });
+        
+        if (!document) {
+            return res.redirect("/database?message=Entry not found");
+        }
+        
+        res.render("details", { document });
+    } catch (error) {
+        console.error("Error fetching entry details:", error);
+        res.redirect("/database?message=Error fetching entry details");
+    }
+});
+
+
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
