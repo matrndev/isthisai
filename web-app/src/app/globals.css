@@ -1,0 +1,4 @@
+:root {
+  --bs-body-font-family: ; /* bypass bootstrap font */
+  font-feature-settings: "liga" 0;
+}

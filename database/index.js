@@ -6,13 +6,14 @@ import OpenAI from "openai";
 import { MongoClient, ObjectId } from "mongodb";
 import bodyParser from "body-parser";
 import fetch from "node-fetch";
+import he from "he";
 
 const client = new OpenAI({
   apiKey: process.env['OPENAI_TOKEN']
 });
 const mongoClient = new MongoClient(process.env['MONGODB_URI']);
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -107,7 +108,7 @@ app.post("/create", async (req, res) => {
 
 app.post("/submit", async (req, res) => {
     let modelOptions;
-    const platform = req.query.platform || "openai";
+    let platform = req.query.platform || "openai";
     if (!platform || platform === "openai") {
         modelOptions = modelList.data;
     } else if (platform === "hc") {
@@ -115,11 +116,11 @@ app.post("/submit", async (req, res) => {
     } else {
         modelOptions = modelList.data;
     }
-    const topic = req.body.topic;
-    const wikiSummary = req.body.wikiSummary;
-    const wikiURL = req.body.wikiURL;
-    const AISummary = req.body.AISummary;
-    const model = req.body.model;
+    const topic = he.decode(req.body.topic);
+    const wikiSummary = he.decode(req.body.wikiSummary);
+    const wikiURL = he.decode(req.body.wikiURL);
+    const AISummary = he.decode(req.body.AISummary);
+    const model = he.decode(req.body.model);
 
     if (!topic || !wikiSummary || !AISummary) {
         return res.render("index", {
@@ -133,6 +134,7 @@ app.post("/submit", async (req, res) => {
     }
 
     try {
+        if (platform == "null") platform = "openai";
         await collection.insertOne({
             topic,
             wikiSummary,

@@ -13,7 +13,7 @@ function getAISummary(input, model, platform) {
       try {
         const response = await client.responses.create({
           model: model || 'gpt-5-nano',
-          instructions: 'Generate a summary of the object provided in the input, basically like the summary section of a Wikipedia page. Your repsponse should be concise. Do not include links, bulletpoints, or markdown formatting. Respond in about 70-120 words.',
+          instructions: 'Generate a summary of the object provided in the input, basically like the summary section of a Wikipedia page. Your repsponse should be concise. Do not include links, bulletpoints, or markdown formatting. Do not encase words in asterisks, this does not make the text bold. Respond in about 70-120 words.',
           input: input,
         });
         resolve(response.output_text);
@@ -33,7 +33,7 @@ function getAISummary(input, model, platform) {
         "Content-Type": "application/json"
         },
         body: JSON.stringify({
-        messages: [{ role: "user", content: `Generate a summary of an object with this title: "${input}", basically like the summary section of a Wikipedia page. Your repsponse should be concise. Do not include links, bulletpoints, or markdown formatting. Respond in about 70-120 words.` }],
+        messages: [{ role: "user", content: `Generate a summary of an object with this title: "${input}", basically like the summary section of a Wikipedia page. Your repsponse should be concise. Do not include links, bulletpoints, or markdown formatting. Do not encase words in asterisks, this does not make the text bold. Respond in about 70-120 words.` }],
         model: model || "qwen/qwen3-32b"
         })
       });
@@ -41,7 +41,7 @@ function getAISummary(input, model, platform) {
         throw new Error(`Hack Club AI API error: ${response.status} ${response.statusText}`);
       }
       const data = await response.json();
-      // Assuming the response structure is similar to OpenAI's
+
       let summary = data.choices?.[0]?.message?.content || "";
       summary = summary.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
       resolve(summary);
