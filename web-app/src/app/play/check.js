@@ -2,12 +2,8 @@
 
 import { getDb } from "../../lib/mongodb";
 import { ObjectId } from "mongodb";
-import { cookies } from 'next/headers'
 
 export default async function check(groupId, submitedText, confidenceLevel) {
-    const cookieStore = await cookies()
-    const currentLevel = parseInt(cookieStore.get('level')?.value) || 1
-
     const db = await getDb();
     const texts = db.collection("texts");
     const entry = await texts.findOne({ _id: new ObjectId(groupId) });
@@ -26,14 +22,18 @@ export default async function check(groupId, submitedText, confidenceLevel) {
     }
 
     if (entry.AISummary === submitedText) {
-        return {
+        const jsonResponse = {
             won: true,
             entry: JSON.parse(JSON.stringify(entry))
         }
+
+        return jsonResponse;
     } else {
-        return {
+        const jsonResponse = {
             won: false,
             entry: JSON.parse(JSON.stringify(entry))
         }
+
+        return jsonResponse;
     }
 }
