@@ -20,7 +20,7 @@ The currently used prompt for the LLM is as follows:
 This prompt is usually able to generate a similar summary to the one given on Wikipedia quite well.
 
 ## To Do
- - [ ] Progress bar (leveling system)
+ - [x] Progress bar (leveling system)
  - [ ] Log the time it takes to respond
  - [ ] Ability to turn off typing animation
  - [ ] Display a "consensus" percentage (e.g. 70% picked the same answer as you)
