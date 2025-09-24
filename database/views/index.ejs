@@ -18,6 +18,7 @@
         <form action="/create" method="POST" class="mb-2" onsubmit="const p=new URLSearchParams(location.search).get('platform'); if(p){ this.action='/create?platform='+encodeURIComponent(p); }">
             <div class="input-group">
                 <input type="text" placeholder="Object Title" class="form-control" id="topic" name="topic" value="<%=topic%>">
+                <input type="text" placeholder="Length (number of words)" class="form-control" id="wordcount" name="wordcount" value="70-120">
             </div>
             <div class="mt-2">
                 <p>Platform: <a href="?platform=openai" class="me-1">OpenAI</a><a href="?platform=hc">Hack Club</a></p>
@@ -74,12 +75,42 @@
                     <h3 class="text-primary"><%=topic%></h3>
                     <div class="col">
                         <h4>Wikipedia:</h4>
-                        <textarea readonly class="form-control" rows="10"><%= wikiSummary %></textarea>
+                        <div>
+                            <textarea id="wikiSummary" readonly class="form-control" rows="10"><%= wikiSummary %></textarea>
+                            <div id="wikiSummaryCount" class="form-text text-end mt-1">0 words</div>
+                            <script>
+                                function wikiSummaryCounter() {
+                                    const textArea = document.getElementById('wikiSummary');
+                                    const counter = document.getElementById('wikiSummaryCount');
+                                    function countWords(text) {
+                                        if (!text) return 0;
+                                        return text.trim().split(/\s+/).filter(Boolean).length;
+                                    }
+                                    const n = countWords(textArea.value);
+                                    counter.textContent = n + (n === 1 ? ' word' : ' words');
+                                    }
+                                    wikiSummaryCounter();
+                            </script>
+                        </div>
                         <small><%=wikiURL%></small>
                     </div>
                     <div class="col">
                         <h4>AI (<%=currentModel%>):</h4>
-                        <textarea readonly class="form-control" rows="10"><%= AISummary %></textarea>
+                        <textarea id="aiSummary" readonly class="form-control" rows="10"><%= AISummary %></textarea>
+                        <div id="aiSummaryCount" class="form-text text-end mt-1">0 words</div>
+                        <script>
+                            function aiSummaryCounter() {
+                                const textArea = document.getElementById('aiSummary');
+                                const counter = document.getElementById('aiSummaryCount');
+                                function countWords(text) {
+                                    if (!text) return 0;
+                                    return text.trim().split(/\s+/).filter(Boolean).length;
+                                }
+                                const n = countWords(textArea.value);
+                                counter.textContent = n + (n === 1 ? ' word' : ' words');
+                            }
+                            aiSummaryCounter();
+                        </script>
                     </div>
                 </div>
                 <div class="controls text-center mt-3">

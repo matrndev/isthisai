@@ -81,6 +81,7 @@ app.post("/create", async (req, res) => {
     let message = "";
     const topic = req.body.topic;
     const model = req.body.model;
+    const wordCount = req.body.wordcount;
     const wikiSummary = await getWikiSummary(topic);
     if (!wikiSummary) {
         message = "No Wikipedia summary found for this topic.";
@@ -94,7 +95,7 @@ app.post("/create", async (req, res) => {
             message
         });
     }
-    const AISummary = await getAISummary(wikiSummary.title, model, platform);
+    const AISummary = await getAISummary(wikiSummary.title, model, platform, wordCount);
     res.render("index", {
         topic: wikiSummary.title,
         wikiSummary: wikiSummary.extract,
