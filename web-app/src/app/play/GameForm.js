@@ -15,10 +15,19 @@ export default function GameForm({ text1, text2, groupId, topic, currentLevel, c
     const [correctCard, setCorrectCard] = React.useState(null);
     const [confidenceLevel, setConfidenceLevel] = React.useState(-1);
     const [levelFinished, setLevelFinished] = React.useState(serverLevelFinished);
+    const [secondsPassed, setSecondsPassed] = React.useState(0);
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            if (gameStatus !== null) return clearInterval(interval);
+            setSecondsPassed(s => s + 1);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [gameStatus]);
 
     function submit() {
         const pickedCardText = pickedCard === 1 ? text1 : text2;
-        check(groupId, pickedCardText, confidenceLevel).then((result) => {
+        check(groupId, pickedCardText, confidenceLevel, secondsPassed).then((result) => {
             setEntry(result.entry)
             setGameStatus(result.won);
 
@@ -103,11 +112,9 @@ export default function GameForm({ text1, text2, groupId, topic, currentLevel, c
                 </div>
             </div>
 
-            {gameStatus !== null && <Evaluation gameStatus={gameStatus} />}
+            {gameStatus !== null && <Evaluation gameStatus={gameStatus} secondsPassed={secondsPassed} />}
 
             {pickedCard !== null && gameStatus === null && <Confidence onConfidenceChange={(confidenceLevel) => setConfidenceLevel(confidenceLevel)} confidenceLevel={confidenceLevel} submit={submit} />}
-
-
         </>
     );
 }

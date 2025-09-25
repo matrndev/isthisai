@@ -3,7 +3,7 @@
 import { getDb } from "../../lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export default async function check(groupId, submitedText, confidenceLevel) {
+export default async function check(groupId, submitedText, confidenceLevel, secondsPassed) {
     const db = await getDb();
     const texts = db.collection("texts");
     const entry = await texts.findOne({ _id: new ObjectId(groupId) });
@@ -14,7 +14,8 @@ export default async function check(groupId, submitedText, confidenceLevel) {
         answeredText: submitedText,
         confidenceLevel: confidenceLevel,
         correct: entry.AISummary === submitedText,
-        timestamp: new Date()
+        timestamp: new Date(),
+        secondsPassed: secondsPassed
     });
 
     if (!entry) {
