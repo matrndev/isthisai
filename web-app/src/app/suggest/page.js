@@ -13,7 +13,7 @@ export default function Suggest() {
 
             <form onSubmit={(e) => { e.preventDefault(); submit(text); alert("Thank you! Your suggestion has been recorded."); }}>
                 <div className="input-group" style={{ maxWidth: "700px", margin: "0 auto" }}>
-                    <input type="text" className="form-control"  placeholder="Your suggested Wikipedia article" onChange={(self) => {setText(self.target.value)}} />
+                    <input required type="text" className="form-control"  placeholder="Your suggested Wikipedia article" onChange={(self) => {setText(self.target.value)}} />
                     <button className="btn btn-outline-primary" type="submit">Submit</button>
                 </div>
             </form>
