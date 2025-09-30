@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={font.className} data-bs-theme="dark">
       <body>
         <p className="text-center">
-          Is This AI | <a href={"/"}>main page</a> · <a href={"/play"}>play game</a> · <a href={"https://github.com/matrndev/isthisai"}>github</a> · <a href={"/suggest"}>suggest topic</a>
+          Is This AI | <a href={"/play"}>play</a> · <a href={"https://github.com/matrndev/isthisai/blob/main/README.md"}>learn more</a> · <a href={"/suggest"}>suggest topic</a> · <a href={"https://github.com/matrndev/isthisai"}>github</a>
         </p>
         {children}
       </body>
