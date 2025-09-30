@@ -22,7 +22,7 @@ This prompt is usually able to generate a similar summary to the one given on Wi
 ## To Do
  - [x] Progress bar (leveling system)
  - [x] Log the time it takes to respond
- - [ ] Add a "loading" disclamer
+ - [x] Add a "loading" disclaimer
  - [ ] Make landing page
  - [ ] Ability to turn off typing animation
  - [ ] Display a "consensus" percentage (e.g. 70% picked the same answer as you)
