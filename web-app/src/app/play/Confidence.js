@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function Confidence({ onConfidenceChange = () => {}, confidenceLevel, submit }) {
-    
     return (
         <div className="alert alert-info mt-4 text-center fade-in">
             <h4>How confident are you in your response?</h4>
@@ -13,7 +12,7 @@ export default function Confidence({ onConfidenceChange = () => {}, confidenceLe
                     <span>Very confident</span>
                 </div>
             </div>
-            {confidenceLevel !== -1 && <button className="btn btn-success fade-in mt-3" style={{ width: "100%" }} onClick={() => submit()}>Lock it in!</button>}
+            {confidenceLevel !== -1 && <button id="submitbtn" className="btn btn-success fade-in mt-3" style={{ width: "100%" }} onClick={(self) => { self.currentTarget.innerText = "Loading..."; self.currentTarget.disabled = true; submit(); }}>Lock it in!</button>}
         </div>
     )
 }
